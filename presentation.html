@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flow Matching for Multi-Fidelity Posterior Estimation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+    <style>
+        .reveal h1 { font-size: 2.5em; }
+        .reveal h2 { font-size: 2em; }
+        .reveal h3 { font-size: 1.5em; }
+        .reveal ul { font-size: 0.9em; }
+        .reveal .slides section .fragment { opacity: 0; }
+        .reveal .slides section .fragment.visible { opacity: 1; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- Title Slide -->
+            <section>
+                <h1>Flow Matching for Multi-Fidelity Posterior Estimation</h1>
+                <p>Your Name</p>
+                <p>Date</p>
+            </section>
+
+            <!-- Section 1: Intro to SBI -->
+            <section>
+                <section>
+                    <h2>Simulation-Based Inference</h2>
+                    <h3>Parameter Estimation</h3>
+                </section>
+
+                <section>
+                    <h3>Parameter Estimation</h3>
+                    <ul>
+                        <li class="fragment">Characterize models by a set of parameters</li>
+                        <li class="fragment">Forward modeling: \(\theta \rightarrow x\)</li>
+                        <li class="fragment">Inverse problems: \(x \rightarrow \theta\)</li>
+                        <li class="fragment">Examples: [Add your examples]</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Likelihood-Free vs Bayesian Inference</h3>
+                    <ul>
+                        <li class="fragment">Likelihood is the bottleneck</li>
+                        <li class="fragment">Simple solution: Use samples instead</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Main SBI Approaches</h3>
+                    <ul>
+                        <li class="fragment"><strong>ABC</strong> - Most intuitive approach</li>
+                        <li class="fragment"><strong>Neural methods (NPE)</strong> - Estimate uncertainties</li>
+                    </ul>
+                    <p class="fragment">Details on NPE training...</p>
+                </section>
+
+                <section>
+                    <h3>Challenges and Limitations in SBI</h3>
+                    <ul>
+                        <li class="fragment">Data efficiency</li>
+                        <li class="fragment">Overconfident posteriors with neural methods (overfitting)</li>
+                        <li class="fragment"><strong>Model misspecification</strong></li>
+                    </ul>
+                    <p class="fragment">Example from Cannon 2022</p>
+                </section>
+            </section>
+
+            <!-- Section 2: Model Misspecification -->
+            <section>
+                <section>
+                    <h2>Model Misspecification</h2>
+                    <h3>Multi-Fidelity Perspective</h3>
+                </section>
+
+                <section>
+                    <h3>Sources of Misspecification</h3>
+                    <ul>
+                        <li class="fragment">Simplified physics</li>
+                        <li class="fragment">Discretization / numerical errors</li>
+                        <li class="fragment">Measurement noise or partial observation</li>
+                        <li class="fragment">Example: Medical imaging</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Effect on SBI Methods</h3>
+                    <p>Neural methods are most affected due to distribution shift</p>
+                </section>
+
+                <section>
+                    <h3>Different Ways to Represent the DGP</h3>
+                    <ul>
+                        <li class="fragment">\(\theta \rightarrow x \rightarrow y\)</li>
+                        <li class="fragment">\(\theta \rightarrow y \rightarrow x\)</li>
+                        <li class="fragment"><strong>\(\theta \rightarrow x\) and \(\theta \rightarrow y\)</strong> (Our focus)</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Our Approach</h3>
+                    <ul>
+                        <li class="fragment">Agnostic to the true DGP</li>
+                        <li class="fragment">Motivation: Using a calibration set (multi-fidelity)</li>
+                        <li class="fragment">Data sources:
+                            <ul>
+                                <li>Ground truth measurements</li>
+                                <li>Costly simulator</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Our Goal</h3>
+                    <p class="fragment">Best posterior estimate possible given a budget</p>
+                    <p class="fragment">(Not focusing on reducing overall cost)</p>
+                </section>
+            </section>
+
+            <!-- Section 3: Correcting the Posterior -->
+            <section>
+                <section>
+                    <h2>Correcting the Posterior</h2>
+                    <h3>Using High-Fidelity Data</h3>
+                </section>
+
+                <section>
+                    <h3>Previous Work</h3>
+                    <ul>
+                        <li>RoPE</li>
+                        <li>MF-NPE</li>
+                        <li>RNPE</li>
+                        <li>NPE-RS</li>
+                    </ul>
+                    <p>(See appendix for details)</p>
+                </section>
+
+                <section>
+                    <h3>Our Approach: 3 Main Points</h3>
+                </section>
+
+                <section>
+                    <h3>1. Flow Matching Source Distribution</h3>
+                    <p class="fragment">Use Flow Matching to generate samples from \(p(\theta | y)\)</p>
+                    <p class="fragment">Need a better source than Gaussian</p>
+                    <p class="fragment">[Add figure to illustrate]</p>
+                </section>
+
+                <section>
+                    <h3>2. Simulation-Informed Source</h3>
+                    <p class="fragment">Designed \(\pi(\theta | y)\) to be closer to target posterior \(p(\theta|y)\)</p>
+                </section>
+
+                <section>
+                    <h3>3. Our Source Form</h3>
+                    <p>We chose a source of the form:</p>
+                    <p class="fragment">
+                        $$ \pi(\theta |y) = \int p(\theta|x)q(x|y)dx $$
+                    </p>
+                    <p class="fragment">Learn \(q(x|y)\) with \((S(\theta_i),y_i)\)</p>
+                    <p class="fragment">Joint optimization for more robustness</p>
+                </section>
+            </section>
+
+            <!-- Section 4: Results and Future Work -->
+            <section>
+                <section>
+                    <h2>Results & Future Directions</h2>
+                </section>
+
+                <section>
+                    <h3>Main Results</h3>
+                    <p>[Add your main results]</p>
+                </section>
+
+                <section>
+                    <h3>Ablation Studies</h3>
+                    <p>[Add ablation study results]</p>
+                </section>
+
+                <section>
+                    <h3>Causal Chambers Dataset</h3>
+                    <p>[Present the causal chambers dataset]</p>
+                </section>
+
+                <section>
+                    <h3>Limitations</h3>
+                    <ul>
+                        <li class="fragment">More costly than basic NPE</li>
+                        <li class="fragment">Sensitive to training hyperparameters at low calibration sizes (early stopping)</li>
+                        <li class="fragment">Yet to be applied to large-scale simulators</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Future Work</h3>
+                    <ul>
+                        <li class="fragment">Optimal source choice</li>
+                        <li class="fragment">More than 2 fidelity levels</li>
+                        <li class="fragment">Faster training with distillation and/or better sampling schemes</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>SBI Hackathon</h3>
+                    <p>January - Looking forward to it!</p>
+                </section>
+            </section>
+
+            <!-- Thank You Slide -->
+            <section>
+                <h2>Thank You!</h2>
+                <p>Questions?</p>
+            </section>
+
+            <!-- Appendix -->
+            <section>
+                <section>
+                    <h2>Appendix</h2>
+                </section>
+
+                <section>
+                    <h3>Details on FMPE</h3>
+                    <p>[Add FMPE details]</p>
+                </section>
+
+                <section>
+                    <h3>RoPE</h3>
+                    <p>[Details on RoPE method]</p>
+                </section>
+
+                <section>
+                    <h3>MF-NPE</h3>
+                    <p>[Details on MF-NPE method]</p>
+                </section>
+
+                <section>
+                    <h3>RNPE</h3>
+                    <p>[Details on RNPE method]</p>
+                </section>
+
+                <section>
+                    <h3>NPE-RS</h3>
+                    <p>[Details on NPE-RS method]</p>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/markdown/markdown.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/math/math.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            controls: true,
+            progress: true,
+            center: true,
+            transition: 'slide',
+            math: {
+                mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js',
+                config: 'TeX-AMS_HTML-full',
+            },
+            plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX ]
+        });
+    </script>
+</body>
+</html>
