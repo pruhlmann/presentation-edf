@@ -439,27 +439,35 @@ for epoch in range(N_epochs):
                                 </div>
                                 <p style="margin-top: 10px; color: #d33682;"><strong>Missing damping term!</strong> \(\alpha = 0\)</p>
                             </div>
+                            <div class="fragment" data-fragment-index="5" style="margin-top: 25px;">
+                            <p> \(\rightarrow\) Even a small amount of misspecification can lead to highly biased posteriors !</p>
+                            </div>
                         </div>
 
                         <!-- Right Column - Image -->
+                        <div class="r-stack">
                         <div class="fragment" data-fragment-index="3" style="display: flex; align-items: center; justify-content: center;">
                             <img src="assets/pendulum.png" alt="Pendulum" style="max-width: 100%; height: auto;">
+                        </div>
+                        <div class="fragment" data-fragment-index="4" style="display: flex; align-items: center; justify-content: center;">
+                            <img src="assets/npe_pendulum.png" alt="npe_pendulum" style="max-width: 100%; height: auto;">
+                        </div>
                         </div>
                     </div>
                 </section>
 
-                <section>
-                    <h4>Impact of model misspecification</h4>
-                    <div class="medium">
-                        <p>Even small misspecifications can lead to large errors in the posterior</p>
-                        <div style="margin-top: 30px;">
-                            <img src="assets/toy_plot.png" alt="Misspecification Impact" style="max-width: 95%; height: auto;">
-                        </div>
-                        <div class="equation" style="font-size: 0.8em; margin-top: 20px;">
-                            $$ \mathbf{\theta} \sim \mathcal{N}(0, 5), \ \mathbf{z}_{1:100} \sim \mathcal{N}(\mathbf{\theta}, \sigma + 1), \ S(\mathbf{\theta}) = (\text{mean}(\mathbf{z}_{1:100}), \text{var}(\mathbf{z}_{1:100})) $$
-                        </div>
-                    </div>
-                </section>
+                <!--<section>-->
+                <!--    <h4>Impact of model misspecification</h4>-->
+                <!--    <div class="medium">-->
+                <!--        <p>Even small misspecifications can lead to large errors in the posterior</p>-->
+                <!--        <div style="margin-top: 30px;">-->
+                <!--            <img src="assets/toy_plot.png" alt="Misspecification Impact" style="max-width: 95%; height: auto;">-->
+                <!--        </div>-->
+                <!--        <div class="equation" style="font-size: 0.8em; margin-top: 20px;">-->
+                <!--            $$ \mathbf{\theta} \sim \mathcal{N}(0, 5), \ \mathbf{z}_{1:100} \sim \mathcal{N}(\mathbf{\theta}, \sigma + 1), \ S(\mathbf{\theta}) = (\text{mean}(\mathbf{z}_{1:100}), \text{var}(\mathbf{z}_{1:100})) $$-->
+                <!--        </div>-->
+                <!--    </div>-->
+                <!--</section>-->
 <section>
                     <h4>Data setting</h4>
                     <p style="font-size: 0.7em; margin-bottom: 30px;">There are two main ways to approach model misspecification in SBI:</p>
@@ -565,7 +573,7 @@ for epoch in range(N_epochs):
             <section>
                 <section>
                     <h2>Our Approach</h2>
-                    <h4>Flow Matching for Misspecification Correction</h4>
+                    <h4>Flow Matching Corrected Posterior Estimation</h4>
                 </section>
 
                 <section>
@@ -581,17 +589,21 @@ for epoch in range(N_epochs):
                         <p class="fragment" style="margin-top: 30px;"><strong>Two step approach:</strong></p>
                         <ol class="fragment">
                                 <li>Design a <strong>source distribution</strong> \(\pi(\mathbf{\theta} | \mathbf{y}) \) which acts as a first guess for the target \( p(\mathbf{\theta} | \mathbf{y})\)</li>
-                            <li>Use <strong>Flow Matching</strong> to move samples from the source \(\pi(\mathbf{\theta} | \mathbf{y}) \)</li>
+                            <li>Use <strong>Flow Matching</strong> to move samples from the source \(\pi(\mathbf{\theta} | \mathbf{y}) \) to \( p(\mathbf{\theta} | \mathbf{y})\)</li>
                         </ol>
 
                         <p class="fragment" style="margin-top: 30px;"><strong>Key Advantages:</strong></p>
                         <ul class="fragment">
                             <li>Leverages abundant simulations AND expensive calibration data efficiently</li>
                             <li>No independence assumption \(\mathbf{y} \perp \theta | \mathbf{x}\) required</li>
-                            <li>Gracefully degrades: if no misspecification, vector field ≈ identity</li>
+                            <li>Can be plugged-in on top of any SBI methods that provides \(\pi(\mathbf{\theta} | \mathbf{x}) \)</li>
                         </ul>
                     </div>
                 </section>
+            <section>
+                <h4>Overview</h4>
+                <img src="assets/method.png" alt="fmcpe">
+            </section>
 
                 <section>
                     <h4>Flow Matching</h4>
@@ -634,86 +646,6 @@ for epoch in range(N_epochs):
                     </div>
                 </section>
 
-                <section>
-                    <h4>Flow Matching Corrected Posterior Estimation</h4>
-                    <div class="medium">
-                        <p>In our work, we want to use flow matching to map high-fidelity data \(\mathbf{y}\) to the simulated data space \(\mathbf{x}\). The first approach we consider is to learn \(p(\mathbf{x}\mid \mathbf{y})\) using:</p>
-                        <div class="equation">
-                            $$  \mathcal{L}_{GFM}(\phi) = \mathbb{E}_{t \sim \mathcal{U}[0,1],\textcolor{red}{\mathbf{y}\sim p(\mathbf{y})},\mathbf{x}_1 \sim p(\mathbf{x}|\textcolor{red}{\mathbf{y}}), \mathbf{x}_t \sim p_t(\mathbf{x}|\mathbf{x}_1)} \left[\Vert u_{\phi}(t,\mathbf{x} | \textcolor{red}{\mathbf{y}}) - u_t(\mathbf{x}|\mathbf{x}_1)\Vert^2\right]$$
-                        </div>
-                        <p class="fragment" style="margin-top: 20px;">We can then use classical NPE techniques to estimate \(p(\mathbf{\theta}\mid \mathbf{x})\) to obtain the corrected posterior:</p>
-                        <div class="fragment equation">
-                            $$ p\left( \mathbf{\theta} | \mathbf{y}  \right) = \int_{\mathcal{X}} p\left( \mathbf{\theta} | \mathbf{x}  \right) p(\mathbf{x} | \mathbf{y})\mathrm{d}\mathbf{x} $$
-                        </div>
-                        <p class="fragment" style="margin-top: 15px; font-size: 0.9em;">The above loss is computed over a small calibration set. To improve training performance, we can pre-train the velocity field to approximate \(p(\mathbf{x})\) and then train for \(p(\mathbf{x}|\mathbf{y})\)</p>
-                    </div>
-                </section>
-
-                <section>
-                    <h4>Limitations of this approach</h4>
-                    <div class="medium">
-                        <p>This method works well but has several drawbacks:</p>
-                        <ul style="margin-top: 20px;">
-                            <li class="fragment">It needs the hypothesis \(\mathbf{\theta} \perp \mathbf{y} \ \lvert \ \mathbf{x}\) to hold</li>
-                            <li class="fragment">Having two neural networks leads to error accumulation: small error in the estimation of \(p(\mathbf{x}|\mathbf{y})\) can lead to invalid \(\mathbf{\theta}\) when evaluating \(p(\mathbf{\theta}|\mathbf{x})\)</li>
-                            <li class="fragment">The pre-training of \(u(t,\mathbf{x}|\mathbf{y})\) doesn't always improve results. It avoids making completely inaccurate predictions but the conditional density isn't always well approximated</li>
-                        </ul>
-                    </div>
-                </section>
-
-                <section>
-                    <h4>Moving the posterior</h4>
-                    <div class="medium">
-                        <p>A solution to these problems would be to move the posterior \(p(\mathbf{\theta}|\mathbf{x})\) to the high-fidelity data space \(\mathbf{y}\) using a flow matching approach.</p>
-                        <p class="fragment" style="margin-top: 30px;"><strong>Idea:</strong> Start from the learned posterior (using NPE) \(q_{\phi}(\mathbf{\theta}|\mathbf{x})\) as base distribution for a flow matching algorithm, and learn a vector field \(u_{\psi}(\mathbf{\theta}|\mathbf{y})\) such that</p>
-                        <div class="fragment equation">
-                            $$ \mathbf{\theta}_0 \sim p(\mathbf{\theta}|\mathbf{x}) \overset{u_{\psi}(\mathbf{\theta}|\mathbf{y})}{\Longrightarrow} \mathbf{\theta}_1 \sim p(\mathbf{\theta}|\mathbf{y})$$
-                        </div>
-                        <p class="fragment" style="margin-top: 20px;">Using this approach, we have the property that under no misspecification, the velocity field \(u_{\psi}(\mathbf{\theta}|\mathbf{y})\) will behave as the identity map</p>
-                    </div>
-                </section>
-
-                <section>
-                    <h4>Training and inference</h4>
-                    <div class="medium">
-                        <p>To train the velocity field, we use the standard flow matching loss, the only difference being the sampling from \(q_{\phi}(\mathbf{\theta}|\mathbf{x})\) as a base distribution.</p>
-                        <p class="fragment" style="margin-top: 20px;">We have a calibration set \((\mathbf{\theta}_i, \mathbf{y}_i)_{1:n}\). To sample from \(q_{\phi}(\mathbf{\theta}|\mathbf{x})\), we can:</p>
-                        <ol style="margin-top: 15px;">
-                            <li class="fragment">Use the simulator on \(\mathbf{\theta}_i\) to obtain \(\mathbf{x}_i\)</li>
-                            <li class="fragment">Plug in \(\mathbf{y}\) directly in the posterior estimator \(q_{\phi}(\mathbf{\theta}|\mathbf{x}=\mathbf{y})\)</li>
-                            <li class="fragment">Use a separate neural density estimator to estimate \(p(\mathbf{x}|\mathbf{y})\) and sample from it (like the previous method)</li>
-                        </ol>
-                        <p class="fragment" style="margin-top: 20px;">At inference we still need a mapping from \(\mathbf{y}\) to \(\mathbf{x}\). Options 2 and 3 are being explored</p>
-                    </div>
-                </section>
-
-                <section>
-                    <h4>Results</h4>
-                    <div>
-                        <img src="assets/loss_grid_cal_std_high_dim_gaussian.png" alt="Results Gaussian" style="max-width: 95%; height: auto;">
-                        <p style="font-size: 0.8em; margin-top: 10px;">Results of the presented approach compared to standard baselines on a simple Gaussian case</p>
-                    </div>
-                </section>
-
-                <section>
-                    <h4>Results</h4>
-                    <div>
-                        <img src="assets/loss_grid_cal_std_ou_process.png" alt="Results OU Process" style="max-width: 95%; height: auto;">
-                        <p style="font-size: 0.8em; margin-top: 10px;">Results of the presented approach compared to standard baselines on the Ornstein-Uhlenbeck process</p>
-                    </div>
-                </section>
-
-                <section>
-                    <h4>Perspectives</h4>
-                    <div class="medium">
-                        <ul>
-                            <li class="fragment">Finish work on current method</li>
-                            <li class="fragment">Apply the method to more complex/real world datasets (e.g. causal chambers, alternator meta-model from EDF)</li>
-                            <li class="fragment">Submit to a conference (ICLR/AISTATS)</li>
-                        </ul>
-                    </div>
-                </section>
-            </section>
 
             <!-- Conclusion -->
             <section>
