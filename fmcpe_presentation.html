@@ -25,6 +25,16 @@
         .reveal .MathJax { font-size: 1em !important; }
         .reveal .MJXc-display { font-size: 1em !important; }
         .reveal mjx-container { font-size: 1em !important; }
+        .reveal [data-auto-animate-target] {
+          transition-property: transform, opacity !important;
+          will-change: transform;
+        }
+        .reveal .slides section { text-align: left; }
+        .reveal .slides section h1,
+        .reveal .slides section h2,
+        .reveal .slides section h3,
+        .reveal .slides section h4,
+        .reveal .slides section h5 { text-align: center; }
         .highlight-box {
             background-color: #f0f0f0;
             border-left: 4px solid #2aa198;
@@ -60,12 +70,14 @@
             <section>
                 <section data-auto-animate>
                     <h2 style="margin-bottom: 20px;">About me</h2>
-                    <ul>
-                        <li>PhD student at Inria Grenoble (3rd year) </li>
-                        <li>Statify/Thoth team</li>
-                        <li>Research focus: Simulation-based inference </li>
-                        <li>Supervisors: Pedro L. Rodrigues, Michael Arbel, Florence Forbes</li>
-                    </ul>
+                    <div class="medium">
+                        <ul>
+                            <li>PhD student at Inria Grenoble (3rd year) </li>
+                            <li>Statify/Thoth team</li>
+                            <li>Research focus: Simulation-based inference </li>
+                            <li>Supervisors: Pedro L. Rodrigues, Michael Arbel, Florence Forbes</li>
+                        </ul>
+                    </div>
                         <div>
                             <img data-id="statify-logo" src="assets/statify.png" alt="Statify Logo" style="max-height: 150px; max-width: 550px; object-fit: contain;">
                         </div>
@@ -85,7 +97,7 @@
 
             <!-- Abstract -->
             <section>
-                <h3>Abstract</h3>
+                <h4>Abstract</h4>
                 <div class="medium">
                     <p class="fragment">Simulation-based inference (SBI) methods enable likelihood-free Bayesian parameter estimation</p>
                     <p class="fragment"><strong>Problem:</strong> Model misspecification leads to biased posteriors and overconfident uncertainty quantification</p>
@@ -107,7 +119,7 @@
 
                 <section data-auto-animate>
 
-    <h3>Statistical Inference</h3>
+    <h4>Statistical Inference</h4>
 
     <div data-id="bayes-rule" class="equation">
         <div class="r-stack">
@@ -122,7 +134,7 @@
         </div>
     </div>
 
-    <div class="fragment">
+    <div class="fragment medium">
         <ul style="margin-top: 20px;">
             <li>\(p(\theta|x)\) - <strong>Posterior</strong>: what we want to compute</li>
             <li>\(p(x|\theta)\) - <strong>Likelihood</strong>: probability of data given parameters</li>
@@ -133,7 +145,7 @@
 
 </section>
                 <section data-auto-animate>
-                    <h3>Statistical Inference</h3>
+                    <h4>Statistical Inference</h4>
                     <div data-id="bayes-rule" class="equation">
                         <div class="r-stack">
                             <div>
@@ -147,8 +159,8 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 10px;">
                         <!-- Bayesian Inference Column -->
                         <div>
-                            <h4 style="text-align: center; color: #2aa198; font-size: 0.85em;">Bayesian Inference</h4>
-                            <div style="margin-top: 20px; font-size: 0.7em;">
+                            <h5 style="text-align: left; color: #2aa198; font-size: 0.85em;">Bayesian Inference</h5>
+                            <div style="margin-top: 20px; font-size: 0.7em; text-align: left;">
                                 <p class="fragment" data-fragment-index="1"><strong>Input:</strong> Model <span style="color: red;">likelihood</span> \(\color{red}{p(x|\theta)}\)</p>
 
                                 <p class="fragment" data-fragment-index="2" style="margin-top: 20px;"><strong>Methods:</strong> MCMC, Variational Inference</p>
@@ -159,8 +171,8 @@
 
                         <!-- SBI Column -->
                         <div>
-                            <h4 style="text-align: center; color: #2aa198; font-size: 0.85em;">Simulation-Based Inference</h4>
-                            <div style="margin-top: 20px; font-size: 0.7em;">
+                            <h5 style="text-align: left; color: #2aa198; font-size: 0.85em;">Simulation-Based Inference</h5>
+                            <div style="margin-top: 20px; font-size: 0.7em; text-align: left;">
                                 <p class="fragment" data-fragment-index="1"><strong>Input:</strong> Simulator \(S: \theta \mapsto x\)</p>
 
                                 <p class="fragment" data-fragment-index="2" style="margin-top: 20px;"><strong>Methods:</strong> <span style="font-style: italic;">(See next section)</span></p>
@@ -175,32 +187,198 @@
                     </p>
                 </section>
 <section>
-                    <h3>Simulation-Based Inference Methods</h3>
-                    <div class="medium">
-                        <p class="fragment"><strong>Approximate Bayesian Computation (ABC)</strong></p>
-                        <ul class="fragment">
-                            <li>Draw \(\theta \sim p(\theta)\), simulate \(x \sim p(\cdot|\theta)\)</li>
-                            <li>Keep \(\theta\) if \(\rho(x, y) < \epsilon\)</li>
-                            <li>Issues: Poor scaling with dimension, requires summary statistics</li>
+                    <h4>Approximate Bayesian Computation (ABC)</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; font-size: 0.7em;">
+                        <!-- Algorithm Steps Column -->
+                        <div style="text-align: left;">
+                            <h5 style="color: #2aa198; font-size: 1em; margin-bottom: 15px;">Algorithm</h5>
+                            <div>
+                                <p class="fragment" data-fragment-index="1", style="margin-bottom: 15px;    "><strong>Inputs:</strong> Simulator \(S\), \(\mathbf{y}_{\text{obs}}\), prior \(p(\theta)\), distance \(\rho\), threshold \(\epsilon\)</p>
+                                <p class="fragment" data-fragment-index="2" style="margin-top: 15px;"><strong>For</strong> \(i = 1, \ldots, n\):</p>
+                                <ol class="fragment" data-fragment-index="3" style="margin-left: 20px;">
+                                    <li>Sample \(\theta_i \sim p(\theta)\)</li>
+                                    <li class="fragment" data-fragment-index="4">Simulate \(\mathbf{x}_i = S(\theta_i)\)</li>
+                                    <li class="fragment" data-fragment-index="5">Keep \(\theta_i\) if \(\rho(\mathbf{x}_i, \mathbf{y}_{\text{obs}}) < \epsilon\)</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- Python Code Column -->
+                        <div style="text-align: left;">
+                            <h5 style="color: #2aa198; font-size: 1em; margin-bottom: 15px;">Python Code</h5>
+                            <div class="r-stack">
+                                <pre class="fragment" data-fragment-index="1" style="margin: 0;"><code class="python" style="font-size: 0.85em;"># Inputs
+S = simulator
+y_obs = observed_data
+prior = p_theta
+rho = distance_function
+epsilon = threshold</code></pre>
+
+                                <pre class="fragment" data-fragment-index="2" style="margin: 0;"><code class="python" style="font-size: 0.85em;"># Inputs
+S = simulator
+y_obs = observed_data
+prior = p_theta
+rho = distance_function
+epsilon = threshold
+
+samples = []
+for i in range(n):</code></pre>
+
+                                <pre class="fragment" data-fragment-index="3" style="margin: 0;"><code class="python" style="font-size: 0.85em;"># Inputs
+S = simulator
+y_obs = observed_data
+prior = p_theta
+rho = distance_function
+epsilon = threshold
+
+samples = []
+for i in range(n):
+    # 1. Sample from prior
+    theta_i = prior.sample()</code></pre>
+
+                                <pre class="fragment" data-fragment-index="4" style="margin: 0;"><code class="python" style="font-size: 0.85em;"># Inputs
+S = simulator
+y_obs = observed_data
+prior = p_theta
+rho = distance_function
+epsilon = threshold
+
+samples = []
+for i in range(n):
+    # 1. Sample from prior
+    theta_i = prior.sample()
+    # 2. Simulate
+    x_i = S(theta_i)</code></pre>
+
+                                <pre class="fragment" data-fragment-index="5" style="margin: 0;"><code class="python" style="font-size: 0.85em;"># Inputs
+S = simulator
+y_obs = observed_data
+prior = p_theta
+rho = distance_function
+epsilon = threshold
+
+samples = []
+for i in range(n):
+    # 1. Sample from prior
+    theta_i = prior.sample()
+    # 2. Simulate
+    x_i = S(theta_i)
+    # 3. Keep if distance < epsilon
+    if rho(x_i, y_obs) < epsilon:
+        samples.append(theta_i)</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="medium fragment" data-fragment-index="6" style="margin-top: 30px;text-align: left;">
+                        <p><strong>Limitations:</strong></p>
+                        <ul>
+                            <li>Poor scaling with dimension</li>
+                            <li>Requires summary statistics</li>
                             <li>Not amortized</li>
                         </ul>
+                    </div>
 
-                        <p class="fragment" style="margin-top: 20px;"><strong>Neural Density Estimation</strong></p>
-                        <ul class="fragment">
-                            <li>Neural Posterior Estimation (NPE)</li>
-                            <li>Neural Likelihood Estimation (NLE)</li>
-                            <li>Benefits: Amortized, no hand-crafted statistics needed</li>
-			    <li> Cons: Prone to overfitting, sensible to distribution shift.
-                        </ul>
+                    <div class="fragment" data-fragment-index="7" style="margin-top: 20px; font-size: 0.55em; color: #666; text-align: left;">
+                        <p><strong>References:</strong> Beaumont et al. (2002), Sisson et al. (2018)</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h4>Neural Posterior Estimation (NPE)</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; font-size: 0.7em;">
+                        <!-- Algorithm Steps Column -->
+                        <div style="text-align: left;">
+                            <h5 style="color: #2aa198; font-size: 1em; margin-bottom: 15px;">Algorithm</h5>
+                            <div>
+                                <p class="fragment" data-fragment-index="1" style="margin-bottom: 15px;"><strong>Inputs:</strong> Simulator \(S\), budget \(N_{\text{train}}\), \(N_{\text{epochs}}\), neural approximator \(q_{\phi}\), summary net \(h_{\psi}\)</p>
+
+                                <p class="fragment" data-fragment-index="2" style="margin-top: 15px;"><strong>Generate training data:</strong></p>
+                                <p class="fragment" data-fragment-index="2" style="margin-left: 20px;">Sample \(\{(\theta_i, \mathbf{x}_i)\}_{i=1}^{N_{\text{train}}}\)</p>
+
+                                <p class="fragment" data-fragment-index="3" style="margin-top: 15px;"><strong>For</strong> \(e = 1, \ldots, N_{\text{epochs}}\):</p>
+                                <p class="fragment" data-fragment-index="4" style="margin-left: 20px;">Minimize KL divergence:</p>
+                                <div class="fragment" data-fragment-index="4" style="margin-left: 20px; margin-top: 10px;">
+                                    $$\mathcal{L}(\phi, \psi) = -\mathbb{E}[\log q_{\phi}(\theta | h_{\psi}(\mathbf{x}))]$$
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Python Code Column -->
+                        <div style="text-align: left;">
+                            <h5 style="color: #2aa198; font-size: 1em; margin-bottom: 15px;">Python Code</h5>
+                            <div class="r-stack">
+                                <pre class="fragment" data-fragment-index="1" style="margin: 0;"><code class="python" style="font-size: 0.85em;"># Inputs
+S = simulator
+N_train = budget
+N_epochs = num_epochs
+q_phi = neural_approximator
+h_psi = summary_net</code></pre>
+
+                                <pre class="fragment" data-fragment-index="2" style="margin: 0;"><code class="python" style="font-size: 0.85em;"># Inputs
+S = simulator
+N_train = budget
+N_epochs = num_epochs
+q_phi = neural_approximator
+h_psi = summary_net
+
+# Generate training data
+thetas = prior.sample(N_train)
+xs = S(thetas)</code></pre>
+
+                                <pre class="fragment" data-fragment-index="3" style="margin: 0;"><code class="python" style="font-size: 0.85em;"># Inputs
+S = simulator
+N_train = budget
+N_epochs = num_epochs
+q_phi = neural_approximator
+h_psi = summary_net
+
+# Generate training data
+thetas = prior.sample(N_train)
+xs = S(thetas)
+
+# Training loop
+for epoch in range(N_epochs):</code></pre>
+
+                                <pre class="fragment" data-fragment-index="4" style="margin: 0;"><code class="python" style="font-size: 0.85em;"># Inputs
+S = simulator
+N_train = budget
+N_epochs = num_epochs
+q_phi = neural_approximator
+h_psi = summary_net
+
+# Generate training data
+thetas = prior.sample(N_train)
+xs = S(thetas)
+
+# Training loop
+for epoch in range(N_epochs):
+    # Minimize KL divergence
+    loss = -q_phi.log_prob(thetas, h_psi(xs)).mean()
+    loss.backward()
+    optimizer.step()</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="medium fragment" data-fragment-index="5" style="margin-top: 30px; text-align: left;">
+                        <p><strong>Benefits:</strong> Amortized inference, no hand-crafted statistics needed</p>
+                        <p style="margin-top: 10px;"><strong>Limitations:</strong> Prone to overfitting, sensitive to distribution shift</p>
+                    </div>
+
+                    <div class="fragment" data-fragment-index="6" style="margin-top: 20px; font-size: 0.55em; color: #666; text-align: left;">
+                        <p><strong>References:</strong> Papamakarios & Murray (2016), Greenberg et al. (2019)</p>
                     </div>
                 </section>
                 <section>
-                    <h3>Challenges in SBI</h3>
-                    <ul>
-                        <li class="fragment"><strong>Expensive simulations</strong> - High computational cost</li>
-                        <li class="fragment"><strong>Over-simplification</strong> - Simulator doesn't capture full complexity</li>
-                        <li class="fragment"><strong>Model misspecification</strong> - Main focus of this work</li>
-                    </ul>
+                    <h4>Challenges in SBI</h4>
+                    <div class="medium">
+                        <ul>
+                            <li class="fragment"><strong>Expensive simulations</strong> - High computational cost</li>
+                            <li class="fragment"><strong>Exploit the simulator</strong> - In certain cases where the simulator is not a black box, we can leverage information (e.g. its gradient) to improve inference.</li>
+                            <li class="fragment"><strong>Model misspecification</strong> - Main focus of this work.</li>
+                        </ul>
+                    </div>
                 </section>
 
             </section>
@@ -212,36 +390,83 @@
                 </section>
 
                 <section>
-                    <h3>Misspecification of the simulator</h3>
-                    <p>The data generating process \(\mathbf{y} \sim p^*\)</p>
-                    <div class="equation">
-                        $$ p^* \notin \left\lbrace p(\cdot|\mathbf{\theta}) \ \big\vert \ \mathbf{\theta} \in \mathbf{\Theta}\right\rbrace $$
+                    <h4>Types of Misspecification and Objective</h4>
+                    <div class="medium" style="color: inherit;">
+                        <p><strong>Types of misspecification:</strong></p>
+                        <ul style="margin-top: 20px;">
+                            <li class="fragment"><strong style="color: inherit;">Simulator misspecification:</strong> Model assumptions are wrong or incomplete (e.g., missing physics)</li>
+                            <li class="fragment"><strong style="color: inherit;">Prior misspecification:</strong> Prior distribution does not reflect true parameter ranges</li>
+                            <li class="fragment"><strong style="color: inherit;">Observation noise:</strong> Noise model in likelihood is misspecified</li>
+                        </ul>
+
+                        <p class="fragment" style="margin-top: 30px;"><strong>Approaches to address misspecification:</strong></p>
+                        <ul style="margin-top: 20px;">
+                            <li class="fragment"><strong style="color: inherit;">Robustness:</strong> Ensemble methods or conservative posteriors</li>
+                            <li class="fragment"><strong style="color: inherit;">Detection:</strong> Identify presence of misspecification</li>
+                            <li class="fragment"><strong style="color: inherit;">Correction:</strong> Build new posterior accounting for discrepancy</li>
+                        </ul>
+
+                        <p class="fragment" style="margin-top: 30px; color: #d33682;"><strong>→ In this work, we focus on correcting simulator misspecification.</strong></p>
                     </div>
-                    <p class="fragment" style="margin-top: 30px;"><strong>Examples of misspecification:</strong></p>
-                    <ul>
-                        <li class="fragment"><strong>Wrong assumptions:</strong> E.g. if we omit the friction forces in a pendulum, then the simulator will give false predictions</li>
-                        <li class="fragment"><strong>Contamination:</strong> Presence of noise in the data, or bias in the data collection</li>
-                        <li class="fragment"><strong>Misspecified prior:</strong> Having a too large or too narrow prior can lead to physically impossible results (negative masses, etc.)</li>
-                    </ul>
                 </section>
 
                 <section>
-                    <h3>Impact of model misspecification</h3>
-                    <p>Even small misspecifications can lead to large errors in the posterior</p>
-                    <div style="margin-top: 30px;">
-                        <img src="assets/toy_plot.png" alt="Misspecification Impact" style="max-width: 95%; height: auto;">
+                    <h4>Misspecification of the simulator</h4>
+                    <div class="medium">
+                        <p>The data generating process \(\mathbf{y} \sim p^*\)</p>
+                        <div class="equation">
+                            $$ p^* \notin \left\lbrace p(\cdot|\mathbf{\theta}) \ \big\vert \ \mathbf{\theta} \in \mathbf{\Theta}\right\rbrace $$
+                        </div>
                     </div>
-                    <div class="equation" style="font-size: 0.8em; margin-top: 20px;">
-                        $$ \mathbf{\theta} \sim \mathcal{N}(0, 5), \ \mathbf{z}_{1:100} \sim \mathcal{N}(\mathbf{\theta}, \sigma + 1), \ S(\mathbf{\theta}) = (\text{mean}(\mathbf{z}_{1:100}), \text{var}(\mathbf{z}_{1:100})) $$
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px;">
+                        <!-- Left Column - Model Equations -->
+                        <div class="medium">
+                            <h5 style="color: #2aa198; font-size: 1em; margin-bottom: 15px;">Example: Damped Pendulum</h5>
+
+                            <div class="fragment" data-fragment-index="1">
+                                <p><strong>High-fidelity model (ground truth):</strong></p>
+                                <div class="equation" style="font-size: 0.95em;">
+                                    $$\mathbf{y}(t) = e^{-\alpha t} A \cos(\omega_0 t) + \epsilon$$
+                                </div>
+                                <p style="margin-top: 10px;">Parameters: \(\theta = (\omega_0, A)\), damping \(\alpha \sim \mathcal{U}(0,1)\)</p>
+                            </div>
+
+                            <div class="fragment" data-fragment-index="2" style="margin-top: 25px;">
+                                <p><strong>Low-fidelity simulator (misspecified):</strong></p>
+                                <div class="equation" style="font-size: 0.95em;">
+                                    $$\mathbf{x}(t) = A \cos(\omega_0 t) + \epsilon$$
+                                </div>
+                                <p style="margin-top: 10px; color: #d33682;"><strong>Missing damping term!</strong> \(\alpha = 0\)</p>
+                            </div>
+                        </div>
+
+                        <!-- Right Column - Image -->
+                        <div class="fragment" data-fragment-index="3" style="display: flex; align-items: center; justify-content: center;">
+                            <img src="assets/pendulum.png" alt="Pendulum" style="max-width: 100%; height: auto;">
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h4>Impact of model misspecification</h4>
+                    <div class="medium">
+                        <p>Even small misspecifications can lead to large errors in the posterior</p>
+                        <div style="margin-top: 30px;">
+                            <img src="assets/toy_plot.png" alt="Misspecification Impact" style="max-width: 95%; height: auto;">
+                        </div>
+                        <div class="equation" style="font-size: 0.8em; margin-top: 20px;">
+                            $$ \mathbf{\theta} \sim \mathcal{N}(0, 5), \ \mathbf{z}_{1:100} \sim \mathcal{N}(\mathbf{\theta}, \sigma + 1), \ S(\mathbf{\theta}) = (\text{mean}(\mathbf{z}_{1:100}), \text{var}(\mathbf{z}_{1:100})) $$
+                        </div>
                     </div>
                 </section>
 <section>
-                    <h3>Data setting</h3>
+                    <h4>Data setting</h4>
                     <p style="font-size: 0.7em; margin-bottom: 30px;">There are two main ways to approach model misspecification in SBI:</p>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; font-size: 0.65em;">
                         <!-- Case 1 Column -->
                         <div class="fragment">
-                            <h4 style="text-align: center; color: #2aa198; font-size: 1.1em; margin-bottom: 20px;">Case 1</h4>
+                            <h5 style="text-align: center; color: #2aa198; font-size: 1.1em; margin-bottom: 20px;">Case 1</h5>
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="margin-bottom: 15px;"><strong>1. Simulation data:</strong><br>Access to simulated pairs \(\{\mathbf{\theta}_i, \mathbf{x}_i\}_{1:m}\)</li>
                                 <li style="margin-bottom: 15px;"><strong>2. Observations:</strong><br>Independent observations \(\{\mathbf{y}_j\}_{1:n}\)<br><span style="font-size: 0.9em; font-style: italic;">(\(\mathbf{y}\) does not depend on \(\mathbf{\theta}\))</span></li>
@@ -251,7 +476,7 @@
 
                         <!-- Case 2 Column -->
                         <div class="fragment">
-                            <h4 style="text-align: center; color: #2aa198; font-size: 1.1em; margin-bottom: 20px;">Case 2</h4>
+                            <h5 style="text-align: center; color: #2aa198; font-size: 1.1em; margin-bottom: 20px;">Case 2</h5>
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="margin-bottom: 15px;"><strong>1. Simulation data:</strong><br>Access to simulated pairs \(\{\mathbf{\theta}_i, \mathbf{x}_i\}_{1:m}\)</li>
                                 <li style="margin-bottom: 15px;"><strong>2. Calibration set:</strong><br>Few paired observations \(\{\mathbf{\theta}_j, \mathbf{y}_j\}_{1:n}\)<br><span style="font-size: 0.9em; font-style: italic;">(Multi-fidelity simulation, expensive ground truth)</span></li>
@@ -269,52 +494,45 @@
                     <h2>Existing Methods</h2>
                 </section>
 
-                
-
                 <section>
-                    <h3>Objective</h3>
-                    <p>There are 3 main properties of interest when addressing model misspecification:</p>
-                    <ul style="margin-top: 30px;">
-                        <li class="fragment"><strong>Robustness:</strong> This can be achieved through ensemble methods or by having a more conservative posterior</li>
-                        <li class="fragment"><strong>Detection:</strong> Before correcting the misspecification, one can first aim to detect its presence to use one method over the other</li>
-                        <li class="fragment"><strong>Correction:</strong> One can aim to correct the misspecification by building a new posterior which would take into account the discrepancy between \(\mathbf{x}\) and \(\mathbf{y}\)</li>
-                    </ul>
-                    <p class="fragment" style="margin-top: 30px; color: #d33682;"><strong>→ In this work, we will focus on the correction of misspecification.</strong></p>
-                </section>
-
-                <section>
-                    <h3>MF-NPE</h3>
-                    <p>A first approach to correct the misspecification is to fine-tune the posterior estimator on the calibration set.</p>
-                    <div class="fragment">
-                        <p style="margin-top: 20px;">Assuming we have data from a low-fidelity simulator \((\mathbf{\theta},\mathbf{x}) \sim p(\mathbf{\theta})p(\mathbf{x}\mid \mathbf{\theta})\), we train a neural density estimator using:</p>
-                        <div class="equation">
-                            $$ \mathcal{L}_{NPE}(\phi) = \mathbb{E}_{\mathbf{\theta},\mathbf{x}} \left[ - \log q_{\phi}(\mathbf{\theta} | \mathbf{x}) \right] $$
+                    <h4>MF-NPE</h4>
+                    <div class="medium">
+                        <p>A first approach to correct the misspecification is to fine-tune the posterior estimator on the calibration set.</p>
+                        <div class="fragment">
+                            <p style="margin-top: 20px;">Assuming we have data from a low-fidelity simulator \((\mathbf{\theta},\mathbf{x}) \sim p(\mathbf{\theta})p(\mathbf{x}\mid \mathbf{\theta})\), we train a neural density estimator using:</p>
+                            <div class="equation">
+                                $$ \mathcal{L}_{NPE}(\phi) = \mathbb{E}_{\mathbf{\theta},\mathbf{x}} \left[ - \log q_{\phi}(\mathbf{\theta} | \mathbf{x}) \right] $$
+                            </div>
                         </div>
-                    </div>
-                    <div class="fragment">
-                        <p style="margin-top: 20px;">Then, using our small but precise calibration set \((\mathbf{\theta}_i, \mathbf{y}_i) \sim p(\mathbf{\theta},\mathbf{y})\), we fine-tune the posterior estimator using the same loss:</p>
-                        <div class="equation">
-                            $$ \mathcal{L}_{NPE}(\phi) = \mathbb{E}_{\mathbf{\theta},\mathbf{y}} \left[ - \log q_{\phi}(\mathbf{\theta} | \mathbf{y}) \right] $$
+                        <div class="fragment">
+                            <p style="margin-top: 20px;">Then, using our small but precise calibration set \((\mathbf{\theta}_i, \mathbf{y}_i) \sim p(\mathbf{\theta},\mathbf{y})\), we fine-tune the posterior estimator using the same loss:</p>
+                            <div class="equation">
+                                $$ \mathcal{L}_{NPE}(\phi) = \mathbb{E}_{\mathbf{\theta},\mathbf{y}} \left[ - \log q_{\phi}(\mathbf{\theta} | \mathbf{y}) \right] $$
+                            </div>
                         </div>
                     </div>
                 </section>
 
                 <section>
-                    <h3>Common hypothesis</h3>
-                    <p>In most settings, the error is assumed to be independent of \(\mathbf{\theta}\):</p>
-                    <div class="equation">
-                        $$ \mathbf{y} \perp \mathbf{\theta} \ \lvert \ \mathbf{x} $$
+                    <h4>Common hypothesis</h4>
+                    <div class="medium">
+                        <p>In most settings, the error is assumed to be independent of \(\mathbf{\theta}\):</p>
+                        <div class="equation">
+                            $$ \mathbf{y} \perp \mathbf{\theta} \ \lvert \ \mathbf{x} $$
+                        </div>
+                        <p class="fragment" style="margin-top: 20px;">This is a necessary condition to express \(p\left( \mathbf{\theta} | \mathbf{y}  \right)\) using \(p\left( \mathbf{\theta} | \mathbf{x}  \right)\) and \(p\left( \mathbf{x} | \mathbf{y}  \right)\):</p>
+                        <div class="fragment equation">
+                            $$ p\left( \mathbf{\theta} | \mathbf{y}  \right) = \int_{\mathcal{X}} p\left( \mathbf{\theta} | \mathbf{x}  \right) p(\mathbf{x} | \mathbf{y})\mathrm{d}\mathbf{x} $$
+                        </div>
+                        <p class="fragment" style="margin-top: 20px; font-size: 0.9em;">In practice, this is not always true for various physical systems. The low-fidelity simulator might not depend on some of the parameters, using a lower dimensional \(\mathbf{\theta}\).</p>
                     </div>
-                    <p class="fragment" style="margin-top: 20px;">This is a necessary condition to express \(p\left( \mathbf{\theta} | \mathbf{y}  \right)\) using \(p\left( \mathbf{\theta} | \mathbf{x}  \right)\) and \(p\left( \mathbf{x} | \mathbf{y}  \right)\):</p>
-                    <div class="fragment equation">
-                        $$ p\left( \mathbf{\theta} | \mathbf{y}  \right) = \int_{\mathcal{X}} p\left( \mathbf{\theta} | \mathbf{x}  \right) p(\mathbf{x} | \mathbf{y})\mathrm{d}\mathbf{x} $$
-                    </div>
-                    <p class="fragment" style="margin-top: 20px; font-size: 0.9em;">In practice, this is not always true for various physical systems. The low-fidelity simulator might not depend on some of the parameters, using a lower dimensional \(\mathbf{\theta}\).</p>
                 </section>
 
                 <section>
-                    <h3>ROPE: Transporting \(\mathbf{y}\) to \(\mathbf{x}\)</h3>
-                    <p>The ROPE method proposes to use optimal transport to match \(p^*(\mathbf{y})\) and \(p(\mathbf{x})\).</p>
+                    <h4>ROPE: Transporting \(\mathbf{y}\) to \(\mathbf{x}\)</h4>
+                    <div class="medium">
+                        <p>The ROPE method proposes to use optimal transport to match \(p^*(\mathbf{y})\) and \(p(\mathbf{x})\).</p>
+                    </div>
                     <div style="font-size: 0.8em; margin-top: 20px;">
                         <p class="fragment"><strong>Input:</strong> Simulator \(S(\mathbf{\theta}, \epsilon)\), calibration data \(\{(\mathbf{\theta}^i, \mathbf{x}_o^i)\}_{i=1}^{N_c}\) and test set \(\{\mathbf{x}_o^i\}_{i=1}^{N_o}\)</p>
                         <p class="fragment"><strong>Step 1:</strong> Train n.n. \(h_{\omega}\) and density estimator \(q_{\phi}\)</p>
@@ -331,13 +549,15 @@
                 </section>
 
                 <section>
-                    <h3>Key takeaways of ROPE</h3>
-                    <ul>
-                        <li class="fragment">Two main components: the fine-tuning of the summary statistic and the transport of the simulated data to the calibration set</li>
-                        <li class="fragment">The correspondence between \(\mathbf{\theta}_i\) and \(\mathbf{x}_o^i\) is only used to define the OT cost</li>
-                        <li class="fragment">The "test" set is used for the computation of the optimal transport. The method can't be applied to new data</li>
-                        <li class="fragment">The hypothesis \(\mathbf{y} \perp \mathbf{\theta} \ \lvert \ \mathbf{x}\) is required to compute the posterior</li>
-                    </ul>
+                    <h4>Key takeaways of ROPE</h4>
+                    <div class="medium">
+                        <ul>
+                            <li class="fragment">Two main components: the fine-tuning of the summary statistic and the transport of the simulated data to the calibration set</li>
+                            <li class="fragment">The correspondence between \(\mathbf{\theta}_i\) and \(\mathbf{x}_o^i\) is only used to define the OT cost</li>
+                            <li class="fragment">The "test" set is used for the computation of the optimal transport. The method can't be applied to new data</li>
+                            <li class="fragment">The hypothesis \(\mathbf{y} \perp \mathbf{\theta} \ \lvert \ \mathbf{x}\) is required to compute the posterior</li>
+                        </ul>
+                    </div>
                 </section>
             </section>
 
@@ -345,93 +565,130 @@
             <section>
                 <section>
                     <h2>Our Approach</h2>
-                    <h3>Flow Matching for Misspecification Correction</h3>
+                    <h4>Flow Matching for Misspecification Correction</h4>
                 </section>
 
                 <section>
-                    <h3>Flow Matching</h3>
-                    <p><strong>Objective:</strong> Match 2 distributions \(q_0,q_1\) via an ODE, i.e. learn a probability path \(p_t(\mathbf{x})\) with \(p_0 = q_0\) and \(p_1 = q_1\)</p>
-                    <div class="equation">
-                        $$ \frac{\mathrm{d}\psi_t(\mathbf{x})}{\mathrm{d}t} = u_t(\psi_t(\mathbf{x})) \qquad \psi_0(\mathbf{x}) = \mathbf{x} $$
+                    <h4>Main Idea: Learn to Correct the Posterior</h4>
+                    <div class="medium">
+                        <p class="fragment"><strong>The Challenge:</strong></p>
+                        <ul class="fragment">
+                            <li>We have a posterior \(q_{\phi}(\theta|\mathbf{x})\) trained on cheap simulations \(\mathbf{x}\)</li>
+                                <li>We have a small <strong>calibration set</strong> \(\mathcal{D}_{\text{cal}} = (\theta_i, \mathbf{y}_i)\) from the true process</li>
+                            <li>Goal: Estimate \(p(\theta|\mathbf{y})\) by leveraging the calibration set and \(q_{\phi}(\theta|\mathbf{x})\) </li>
+                        </ul>
+
+                        <p class="fragment" style="margin-top: 30px;"><strong>Two step approach:</strong></p>
+                        <ol class="fragment">
+                                <li>Design a <strong>source distribution</strong> \(\pi(\mathbf{\theta} | \mathbf{y}) \) which acts as a first guess for the target \( p(\mathbf{\theta} | \mathbf{y})\)</li>
+                            <li>Use <strong>Flow Matching</strong> to move samples from the source \(\pi(\mathbf{\theta} | \mathbf{y}) \)</li>
+                        </ol>
+
+                        <p class="fragment" style="margin-top: 30px;"><strong>Key Advantages:</strong></p>
+                        <ul class="fragment">
+                            <li>Leverages abundant simulations AND expensive calibration data efficiently</li>
+                            <li>No independence assumption \(\mathbf{y} \perp \theta | \mathbf{x}\) required</li>
+                            <li>Gracefully degrades: if no misspecification, vector field ≈ identity</li>
+                        </ul>
                     </div>
-                    <p class="fragment" style="margin-top: 20px;"><strong>Why:</strong> The vector field \(u(t, \mathbf{x}_t)\) and the probability path \(p_t\) verify the transport equation:</p>
-                    <div class="fragment equation">
-                        $$ \displaystyle\frac{\partial p_t(\mathbf{x})}{\partial t} = - \nabla \, . \, \left(u_t(\mathbf{x})p_t(\mathbf{x})\right)$$
-                    </div>
-                    <p class="fragment" style="margin-top: 20px;"><strong>How:</strong> We can regress the vector field with a neural network</p>
-                    <div class="fragment equation">
-                        $$ \mathcal{L}_{FM}(\phi) = \mathbb{E}_{t \sim \mathcal{U}[0,1]}\mathbb{E}_{\mathbf{x} \sim p_t} \left[\Vert u_{\phi}(t,\mathbf{x}) - u(t,\mathbf{x})\Vert^2\right]$$
-                    </div>
-                    <p class="fragment" style="color: red; margin-top: 15px;">→ We don't know \(u_t(\mathbf{x})\) !</p>
                 </section>
 
                 <section>
-                    <h3>Conditional Flow Matching</h3>
-                    <p><strong>Key Idea:</strong> Since we have access to samples from \(q_1\), we can condition the vector field on the target point \(\mathbf{x}_1 \sim q_1\)</p>
-                    <div class="equation">
-                        $$ p_t(\mathbf{x}_t) = \int q_1(\mathbf{x}_1)p_{t|1}(\mathbf{x}_t | \mathbf{x}_1) \mathrm{d} \mathbf{x}_1$$
+                    <h4>Flow Matching</h4>
+                    <div class="medium">
+                        <p><strong>Objective:</strong> Match 2 distributions \(q_0,q_1\) via an ODE, i.e. learn a probability path \(p_t(\mathbf{x})\) with \(p_0 = q_0\) and \(p_1 = q_1\)</p>
+                        <div class="equation">
+                            $$ \frac{\mathrm{d}\psi_t(\mathbf{x})}{\mathrm{d}t} = u_t(\psi_t(\mathbf{x})) \qquad \psi_0(\mathbf{x}) = \mathbf{x} $$
+                        </div>
+                        <p class="fragment" style="margin-top: 20px;"><strong>Why:</strong> The vector field \(u(t, \mathbf{x}_t)\) and the probability path \(p_t\) verify the transport equation:</p>
+                        <div class="fragment equation">
+                            $$ \displaystyle\frac{\partial p_t(\mathbf{x})}{\partial t} = - \nabla \, . \, \left(u_t(\mathbf{x})p_t(\mathbf{x})\right)$$
+                        </div>
+                        <p class="fragment" style="margin-top: 20px;"><strong>How:</strong> We can regress the vector field with a neural network</p>
+                        <div class="fragment equation">
+                            $$ \mathcal{L}_{FM}(\phi) = \mathbb{E}_{t \sim \mathcal{U}[0,1]}\mathbb{E}_{\mathbf{x} \sim p_t} \left[\Vert u_{\phi}(t,\mathbf{x}) - u(t,\mathbf{x})\Vert^2\right]$$
+                        </div>
+                        <p class="fragment" style="color: red; margin-top: 15px;">→ We don't know \(u_t(\mathbf{x})\) !</p>
                     </div>
-                    <div class="fragment equation">
-                        $$ p_{t = 0|1}(\mathbf{x} | \mathbf{x}_1) = \mathcal{N}(0,I) \qquad p_{t=1|1}(\mathbf{x} | \mathbf{x}_1) = \mathcal{N}\left(\mathbf{x}_1, \sigma_{\min}^2I\right)$$
-                    </div>
-                    <p class="fragment" style="margin-top: 20px;">The induced \(u_t(\mathbf{x} | \mathbf{x}_1)\) is available in closed form e.g.</p>
-                    <div class="fragment equation">
-                        $$ u_t(\mathbf{x}|\mathbf{x}_1) = \mathbf{x}_1 - \mathbf{x}$$
-                    </div>
-                    <p class="fragment" style="margin-top: 15px;">The loss becomes</p>
-                    <div class="fragment equation">
-                        $$ \mathcal{L}_{CFM}(\phi) = \mathbb{E}_{t \sim \mathcal{U}[0,1],\mathbf{x}_1 \sim q_1, \mathbf{x}_t \sim p_t(\mathbf{x}|\mathbf{x}_1)} \left[\Vert u_{\phi}(t,\mathbf{x}) - u_t(\mathbf{x}|\mathbf{x}_1)\Vert^2\right]$$
-                    </div>
-                    <p class="fragment" style="color: red; margin-top: 15px;">→ Same gradient as \(\mathcal{L}_{FM}\)</p>
                 </section>
 
                 <section>
-                    <h3>Flow Matching Corrected Posterior Estimation</h3>
-                    <p>In our work, we want to use flow matching to map high-fidelity data \(\mathbf{y}\) to the simulated data space \(\mathbf{x}\). The first approach we consider is to learn \(p(\mathbf{x}\mid \mathbf{y})\) using:</p>
-                    <div class="equation">
-                        $$  \mathcal{L}_{GFM}(\phi) = \mathbb{E}_{t \sim \mathcal{U}[0,1],\textcolor{red}{\mathbf{y}\sim p(\mathbf{y})},\mathbf{x}_1 \sim p(\mathbf{x}|\textcolor{red}{\mathbf{y}}), \mathbf{x}_t \sim p_t(\mathbf{x}|\mathbf{x}_1)} \left[\Vert u_{\phi}(t,\mathbf{x} | \textcolor{red}{\mathbf{y}}) - u_t(\mathbf{x}|\mathbf{x}_1)\Vert^2\right]$$
+                    <h4>Conditional Flow Matching</h4>
+                    <div class="medium">
+                        <p><strong>Key Idea:</strong> Since we have access to samples from \(q_1\), we can condition the vector field on the target point \(\mathbf{x}_1 \sim q_1\)</p>
+                        <div class="equation">
+                            $$ p_t(\mathbf{x}_t) = \int q_1(\mathbf{x}_1)p_{t|1}(\mathbf{x}_t | \mathbf{x}_1) \mathrm{d} \mathbf{x}_1$$
+                        </div>
+                        <div class="fragment equation">
+                            $$ p_{t = 0|1}(\mathbf{x} | \mathbf{x}_1) = \mathcal{N}(0,I) \qquad p_{t=1|1}(\mathbf{x} | \mathbf{x}_1) = \mathcal{N}\left(\mathbf{x}_1, \sigma_{\min}^2I\right)$$
+                        </div>
+                        <p class="fragment" style="margin-top: 20px;">The induced \(u_t(\mathbf{x} | \mathbf{x}_1)\) is available in closed form e.g.</p>
+                        <div class="fragment equation">
+                            $$ u_t(\mathbf{x}|\mathbf{x}_1) = \mathbf{x}_1 - \mathbf{x}$$
+                        </div>
+                        <p class="fragment" style="margin-top: 15px;">The loss becomes</p>
+                        <div class="fragment equation">
+                            $$ \mathcal{L}_{CFM}(\phi) = \mathbb{E}_{t \sim \mathcal{U}[0,1],\mathbf{x}_1 \sim q_1, \mathbf{x}_t \sim p_t(\mathbf{x}|\mathbf{x}_1)} \left[\Vert u_{\phi}(t,\mathbf{x}) - u_t(\mathbf{x}|\mathbf{x}_1)\Vert^2\right]$$
+                        </div>
+                        <p class="fragment" style="color: red; margin-top: 15px;">→ Same gradient as \(\mathcal{L}_{FM}\)</p>
                     </div>
-                    <p class="fragment" style="margin-top: 20px;">We can then use classical NPE techniques to estimate \(p(\mathbf{\theta}\mid \mathbf{x})\) to obtain the corrected posterior:</p>
-                    <div class="fragment equation">
-                        $$ p\left( \mathbf{\theta} | \mathbf{y}  \right) = \int_{\mathcal{X}} p\left( \mathbf{\theta} | \mathbf{x}  \right) p(\mathbf{x} | \mathbf{y})\mathrm{d}\mathbf{x} $$
+                </section>
+
+                <section>
+                    <h4>Flow Matching Corrected Posterior Estimation</h4>
+                    <div class="medium">
+                        <p>In our work, we want to use flow matching to map high-fidelity data \(\mathbf{y}\) to the simulated data space \(\mathbf{x}\). The first approach we consider is to learn \(p(\mathbf{x}\mid \mathbf{y})\) using:</p>
+                        <div class="equation">
+                            $$  \mathcal{L}_{GFM}(\phi) = \mathbb{E}_{t \sim \mathcal{U}[0,1],\textcolor{red}{\mathbf{y}\sim p(\mathbf{y})},\mathbf{x}_1 \sim p(\mathbf{x}|\textcolor{red}{\mathbf{y}}), \mathbf{x}_t \sim p_t(\mathbf{x}|\mathbf{x}_1)} \left[\Vert u_{\phi}(t,\mathbf{x} | \textcolor{red}{\mathbf{y}}) - u_t(\mathbf{x}|\mathbf{x}_1)\Vert^2\right]$$
+                        </div>
+                        <p class="fragment" style="margin-top: 20px;">We can then use classical NPE techniques to estimate \(p(\mathbf{\theta}\mid \mathbf{x})\) to obtain the corrected posterior:</p>
+                        <div class="fragment equation">
+                            $$ p\left( \mathbf{\theta} | \mathbf{y}  \right) = \int_{\mathcal{X}} p\left( \mathbf{\theta} | \mathbf{x}  \right) p(\mathbf{x} | \mathbf{y})\mathrm{d}\mathbf{x} $$
+                        </div>
+                        <p class="fragment" style="margin-top: 15px; font-size: 0.9em;">The above loss is computed over a small calibration set. To improve training performance, we can pre-train the velocity field to approximate \(p(\mathbf{x})\) and then train for \(p(\mathbf{x}|\mathbf{y})\)</p>
                     </div>
-                    <p class="fragment" style="margin-top: 15px; font-size: 0.9em;">The above loss is computed over a small calibration set. To improve training performance, we can pre-train the velocity field to approximate \(p(\mathbf{x})\) and then train for \(p(\mathbf{x}|\mathbf{y})\)</p>
                 </section>
 
                 <section>
-                    <h3>Limitations of this approach</h3>
-                    <p>This method works well but has several drawbacks:</p>
-                    <ul style="margin-top: 20px;">
-                        <li class="fragment">It needs the hypothesis \(\mathbf{\theta} \perp \mathbf{y} \ \lvert \ \mathbf{x}\) to hold</li>
-                        <li class="fragment">Having two neural networks leads to error accumulation: small error in the estimation of \(p(\mathbf{x}|\mathbf{y})\) can lead to invalid \(\mathbf{\theta}\) when evaluating \(p(\mathbf{\theta}|\mathbf{x})\)</li>
-                        <li class="fragment">The pre-training of \(u(t,\mathbf{x}|\mathbf{y})\) doesn't always improve results. It avoids making completely inaccurate predictions but the conditional density isn't always well approximated</li>
-                    </ul>
-                </section>
-
-                <section>
-                    <h3>Moving the posterior</h3>
-                    <p>A solution to these problems would be to move the posterior \(p(\mathbf{\theta}|\mathbf{x})\) to the high-fidelity data space \(\mathbf{y}\) using a flow matching approach.</p>
-                    <p class="fragment" style="margin-top: 30px;"><strong>Idea:</strong> Start from the learned posterior (using NPE) \(q_{\phi}(\mathbf{\theta}|\mathbf{x})\) as base distribution for a flow matching algorithm, and learn a vector field \(u_{\psi}(\mathbf{\theta}|\mathbf{y})\) such that</p>
-                    <div class="fragment equation">
-                        $$ \mathbf{\theta}_0 \sim p(\mathbf{\theta}|\mathbf{x}) \overset{u_{\psi}(\mathbf{\theta}|\mathbf{y})}{\Longrightarrow} \mathbf{\theta}_1 \sim p(\mathbf{\theta}|\mathbf{y})$$
+                    <h4>Limitations of this approach</h4>
+                    <div class="medium">
+                        <p>This method works well but has several drawbacks:</p>
+                        <ul style="margin-top: 20px;">
+                            <li class="fragment">It needs the hypothesis \(\mathbf{\theta} \perp \mathbf{y} \ \lvert \ \mathbf{x}\) to hold</li>
+                            <li class="fragment">Having two neural networks leads to error accumulation: small error in the estimation of \(p(\mathbf{x}|\mathbf{y})\) can lead to invalid \(\mathbf{\theta}\) when evaluating \(p(\mathbf{\theta}|\mathbf{x})\)</li>
+                            <li class="fragment">The pre-training of \(u(t,\mathbf{x}|\mathbf{y})\) doesn't always improve results. It avoids making completely inaccurate predictions but the conditional density isn't always well approximated</li>
+                        </ul>
                     </div>
-                    <p class="fragment" style="margin-top: 20px;">Using this approach, we have the property that under no misspecification, the velocity field \(u_{\psi}(\mathbf{\theta}|\mathbf{y})\) will behave as the identity map</p>
                 </section>
 
                 <section>
-                    <h3>Training and inference</h3>
-                    <p>To train the velocity field, we use the standard flow matching loss, the only difference being the sampling from \(q_{\phi}(\mathbf{\theta}|\mathbf{x})\) as a base distribution.</p>
-                    <p class="fragment" style="margin-top: 20px;">We have a calibration set \((\mathbf{\theta}_i, \mathbf{y}_i)_{1:n}\). To sample from \(q_{\phi}(\mathbf{\theta}|\mathbf{x})\), we can:</p>
-                    <ol style="margin-top: 15px;">
-                        <li class="fragment">Use the simulator on \(\mathbf{\theta}_i\) to obtain \(\mathbf{x}_i\)</li>
-                        <li class="fragment">Plug in \(\mathbf{y}\) directly in the posterior estimator \(q_{\phi}(\mathbf{\theta}|\mathbf{x}=\mathbf{y})\)</li>
-                        <li class="fragment">Use a separate neural density estimator to estimate \(p(\mathbf{x}|\mathbf{y})\) and sample from it (like the previous method)</li>
-                    </ol>
-                    <p class="fragment" style="margin-top: 20px;">At inference we still need a mapping from \(\mathbf{y}\) to \(\mathbf{x}\). Options 2 and 3 are being explored</p>
+                    <h4>Moving the posterior</h4>
+                    <div class="medium">
+                        <p>A solution to these problems would be to move the posterior \(p(\mathbf{\theta}|\mathbf{x})\) to the high-fidelity data space \(\mathbf{y}\) using a flow matching approach.</p>
+                        <p class="fragment" style="margin-top: 30px;"><strong>Idea:</strong> Start from the learned posterior (using NPE) \(q_{\phi}(\mathbf{\theta}|\mathbf{x})\) as base distribution for a flow matching algorithm, and learn a vector field \(u_{\psi}(\mathbf{\theta}|\mathbf{y})\) such that</p>
+                        <div class="fragment equation">
+                            $$ \mathbf{\theta}_0 \sim p(\mathbf{\theta}|\mathbf{x}) \overset{u_{\psi}(\mathbf{\theta}|\mathbf{y})}{\Longrightarrow} \mathbf{\theta}_1 \sim p(\mathbf{\theta}|\mathbf{y})$$
+                        </div>
+                        <p class="fragment" style="margin-top: 20px;">Using this approach, we have the property that under no misspecification, the velocity field \(u_{\psi}(\mathbf{\theta}|\mathbf{y})\) will behave as the identity map</p>
+                    </div>
                 </section>
 
                 <section>
-                    <h3>Results</h3>
+                    <h4>Training and inference</h4>
+                    <div class="medium">
+                        <p>To train the velocity field, we use the standard flow matching loss, the only difference being the sampling from \(q_{\phi}(\mathbf{\theta}|\mathbf{x})\) as a base distribution.</p>
+                        <p class="fragment" style="margin-top: 20px;">We have a calibration set \((\mathbf{\theta}_i, \mathbf{y}_i)_{1:n}\). To sample from \(q_{\phi}(\mathbf{\theta}|\mathbf{x})\), we can:</p>
+                        <ol style="margin-top: 15px;">
+                            <li class="fragment">Use the simulator on \(\mathbf{\theta}_i\) to obtain \(\mathbf{x}_i\)</li>
+                            <li class="fragment">Plug in \(\mathbf{y}\) directly in the posterior estimator \(q_{\phi}(\mathbf{\theta}|\mathbf{x}=\mathbf{y})\)</li>
+                            <li class="fragment">Use a separate neural density estimator to estimate \(p(\mathbf{x}|\mathbf{y})\) and sample from it (like the previous method)</li>
+                        </ol>
+                        <p class="fragment" style="margin-top: 20px;">At inference we still need a mapping from \(\mathbf{y}\) to \(\mathbf{x}\). Options 2 and 3 are being explored</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h4>Results</h4>
                     <div>
                         <img src="assets/loss_grid_cal_std_high_dim_gaussian.png" alt="Results Gaussian" style="max-width: 95%; height: auto;">
                         <p style="font-size: 0.8em; margin-top: 10px;">Results of the presented approach compared to standard baselines on a simple Gaussian case</p>
@@ -439,7 +696,7 @@
                 </section>
 
                 <section>
-                    <h3>Results</h3>
+                    <h4>Results</h4>
                     <div>
                         <img src="assets/loss_grid_cal_std_ou_process.png" alt="Results OU Process" style="max-width: 95%; height: auto;">
                         <p style="font-size: 0.8em; margin-top: 10px;">Results of the presented approach compared to standard baselines on the Ornstein-Uhlenbeck process</p>
@@ -447,19 +704,79 @@
                 </section>
 
                 <section>
-                    <h3>Perspectives</h3>
-                    <ul>
-                        <li class="fragment">Finish work on current method</li>
-                        <li class="fragment">Apply the method to more complex/real world datasets (e.g. causal chambers, alternator meta-model from EDF)</li>
-                        <li class="fragment">Submit to a conference (ICLR/AISTATS)</li>
-                    </ul>
+                    <h4>Perspectives</h4>
+                    <div class="medium">
+                        <ul>
+                            <li class="fragment">Finish work on current method</li>
+                            <li class="fragment">Apply the method to more complex/real world datasets (e.g. causal chambers, alternator meta-model from EDF)</li>
+                            <li class="fragment">Submit to a conference (ICLR/AISTATS)</li>
+                        </ul>
+                    </div>
                 </section>
             </section>
 
             <!-- Conclusion -->
             <section>
                 <h2>Thank You!</h2>
-                <p>Questions?</p>
+                <div class="medium">
+                    <p>Questions?</p>
+                </div>
+            </section>
+
+            <!-- Appendix -->
+            <section>
+                <section>
+                    <h2>Appendix</h2>
+                </section>
+
+                <section>
+                    <h4>NPE Loss Derivation from KL Divergence</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; font-size: 0.65em;">
+                        <!-- Left Column -->
+                        <div>
+                            <p>We want to minimize the KL divergence for all \(\mathbf{x}\):</p>
+                            <div class="equation fragment" style="font-size: 0.95em;">
+                                $$\mathbb{E}_{p(\mathbf{x})}\left[\text{KL}(p(\theta|\mathbf{x}) \,||\, q_{\phi}(\theta|\mathbf{x}))\right]$$
+                            </div>
+                            <div class="equation fragment" style="font-size: 0.95em; margin-top: 10px;">
+                                $$= \mathbb{E}_{p(\mathbf{x})}\mathbb{E}_{p(\theta|\mathbf{x})}\left[\log \frac{p(\theta|\mathbf{x})}{q_{\phi}(\theta|\mathbf{x})}\right]$$
+                            </div>
+
+                            <p class="fragment" style="margin-top: 20px;">Expanding the logarithm:</p>
+                            <div class="equation fragment" style="font-size: 0.95em;">
+                                $$= \mathbb{E}_{p(\mathbf{x})}\mathbb{E}_{p(\theta|\mathbf{x})}\left[\log p(\theta|\mathbf{x})\right]$$
+                            </div>
+                            <div class="equation fragment" style="font-size: 0.95em;">
+                                $$- \mathbb{E}_{p(\mathbf{x})}\mathbb{E}_{p(\theta|\mathbf{x})}\left[\log q_{\phi}(\theta|\mathbf{x})\right]$$
+                            </div>
+
+                            <p class="fragment" style="margin-top: 20px;">First term does not depend on \(\phi\):</p>
+                            <div class="equation fragment" style="font-size: 0.95em;">
+                                $$\min_{\phi} \mathbb{E}_{p(\mathbf{x})}\left[\text{KL}(p \,||\, q_{\phi})\right]$$
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div>
+                            <p>Equivalent to maximizing:</p>
+                            <div class="equation fragment" style="font-size: 0.95em;">
+                                $$\max_{\phi} \mathbb{E}_{p(\mathbf{x})}\mathbb{E}_{p(\theta|\mathbf{x})}\left[\log q_{\phi}(\theta|\mathbf{x})\right]$$
+                            </div>
+
+                            <p class="fragment" style="margin-top: 20px;">Using joint distribution \(p(\theta, \mathbf{x}) = p(\mathbf{x}|\theta)p(\theta)\):</p>
+                            <div class="equation fragment" style="font-size: 0.95em;">
+                                $$= \max_{\phi} \mathbb{E}_{p(\theta, \mathbf{x})}\left[\log q_{\phi}(\theta|\mathbf{x})\right]$$
+                            </div>
+
+                            <p class="fragment" style="margin-top: 20px;">Approximate with samples:</p>
+                            <div class="equation fragment" style="font-size: 0.95em;">
+                                $$\mathcal{L}(\phi, \psi) = -\frac{1}{N}\sum_{i=1}^{N} \log q_{\phi}(\theta_i | h_{\psi}(\mathbf{x}_i))$$
+                            </div>
+
+                            <p class="fragment" style="margin-top: 20px;">where \((\theta_i, \mathbf{x}_i) \sim p(\theta)p(\mathbf{x}|\theta)\)</p>
+                        </div>
+                    </div>
+                </section>
             </section>
 
         </div>
@@ -482,7 +799,15 @@
                 mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js',
                 config: 'TeX-AMS_HTML-full',
             },
-            plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.MathJax3 ]
+            plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.MathJax3 ],
+            autoAnimate: {
+            // Prevents stretch/tear effects
+            easing: 'ease-out',
+            duration: 0.6,
+
+            // This is the key line:
+            autoAnimateUnmatched: false
+          }
         });
     </script>
 </body>
