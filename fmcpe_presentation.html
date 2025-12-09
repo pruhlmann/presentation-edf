@@ -52,6 +52,12 @@
             font-size: 0.9em;
             margin: 20px 0;
         }
+        .title-slide {
+            text-align: center !important;
+        }
+        .title-slide p {
+            text-align: center !important;
+        }
     </style>
 </head>
 <body>
@@ -59,7 +65,7 @@
         <div class="slides">
 
             <!-- Title Slide -->
-            <section>
+            <section class="title-slide">
                 <h2>Flow Matching Corrected<br>Posterior Estimation (FMCPE)</h2>
                 <p style="margin-top: 40px;">Pierre-Louis Ruhlmann</p>
                 <p>Pedro L. Rodrigues, Michael Arbel, Florence Forbes</p>
@@ -604,11 +610,6 @@ for epoch in range(N_epochs):
                         </ul>
                     </div>
                 </section>
-            <section>
-                <h4>Overview</h4>
-                <img src="assets/method.png" alt="fmcpe">
-            </section>
-
                 <section>
                     <h4>Flow Matching</h4>
                     <div class="medium">
@@ -650,6 +651,42 @@ for epoch in range(N_epochs):
                     </div>
                 </section>
 
+                <section>
+                    <h4 style="margin-bottom: 50px;">FMCPE Overview</h4>
+                    <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 10px; align-items: top; width: 150%; margin-left: -25%; margin-right: -25%;">
+                        <!-- Schema column with r-stack -->
+                        <div class="r-stack">
+                            <img class="fragment fade-in-then-out" data-fragment-index="1" src="assets/schema_0.svg" alt="Schema step 0" style="width: 100%; height: auto;">
+                            <img class="fragment fade-in-then-out" data-fragment-index="2" src="assets/schema_1.svg" alt="Schema step 1" style="width: 100%; height: auto;">
+                            <img class="fragment fade-in-then-out" data-fragment-index="3" src="assets/schema_2.svg" alt="Schema step 2" style="width: 100%; height: auto;">
+                            <img class="fragment fade-in-then-out" data-fragment-index="4" src="assets/schema_3.svg" alt="Schema step 3" style="width: 100%; height: auto;">
+                            <img class="fragment fade-in" data-fragment-index="5" src="assets/schema_full.svg" alt="Schema full" style="width: 100%; height: auto;">
+                        </div>
+                        <!-- Algo column with r-stack -->
+                        <div class="r-stack">
+                            <img class="fragment fade-in-then-out" data-fragment-index="1" src="assets/algo_0.svg" alt="Algorithm step 0" style="width: 100%; height: auto;">
+                            <img class="fragment fade-in-then-out" data-fragment-index="2" src="assets/algo_1.svg" alt="Algorithm step 1" style="width: 100%; height: auto;">
+                            <img class="fragment fade-in-then-out" data-fragment-index="3" src="assets/algo_2.svg" alt="Algorithm step 2" style="width: 100%; height: auto;">
+                            <img class="fragment fade-in-then-out" data-fragment-index="4" src="assets/algo_3.svg" alt="Algorithm step 3" style="width: 100%; height: auto;">
+                            <img class="fragment fade-in" data-fragment-index="5" src="assets/algo_full.svg" alt="Algorithm full" style="width: 100%; height: auto;">
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- Results -->
+            <section>
+                <section>
+                    <h2>Results</h2>
+                </section>
+
+                <section>
+                    <h4>Posterior Estimation Results</h4>
+                    <div style="display: flex; justify-content: center; align-items: center; margin-top: 30px;">
+                        <img src="assets/kde.svg" alt="KDE Results" style="max-width: 95%; height: auto;">
+                    </div>
+                </section>
+            </section>
 
             <!-- Conclusion -->
             <section>
