@@ -58,6 +58,12 @@
         .title-slide p {
             text-align: center !important;
         }
+        .reveal {
+            background-color: #ffffff !important;
+        }
+        .reveal .slides {
+            background-color: #ffffff !important;
+        }
     </style>
 </head>
 <body>
@@ -532,37 +538,22 @@ for epoch in range(N_epochs):
                 </section>
 
                 <section>
-                    <h4>Common hypothesis</h4>
-                    <div class="medium">
-                        <p>In most settings, the error is assumed to be independent of \(\mathbf{\theta}\):</p>
-                        <div class="equation">
-                            $$ \mathbf{y} \perp \mathbf{\theta} \ \lvert \ \mathbf{x} $$
-                        </div>
-                        <p class="fragment" style="margin-top: 20px;">This is a necessary condition to express \(p\left( \mathbf{\theta} | \mathbf{y}  \right)\) using \(p\left( \mathbf{\theta} | \mathbf{x}  \right)\) and \(p\left( \mathbf{x} | \mathbf{y}  \right)\):</p>
-                        <div class="fragment equation">
-                            $$ p\left( \mathbf{\theta} | \mathbf{y}  \right) = \int_{\mathcal{X}} p\left( \mathbf{\theta} | \mathbf{x}  \right) p(\mathbf{x} | \mathbf{y})\mathrm{d}\mathbf{x} $$
-                        </div>
-                        <p class="fragment" style="margin-top: 20px; font-size: 0.9em;">In practice, this is not always true for various physical systems. The low-fidelity simulator might not depend on some of the parameters, using a lower dimensional \(\mathbf{\theta}\).</p>
-                    </div>
-                </section>
-
-                <section>
                     <h4>ROPE: Transporting \(\mathbf{y}\) to \(\mathbf{x}\)</h4>
                     <div class="medium">
                         <p>The ROPE method proposes to use optimal transport to match \(p^*(\mathbf{y})\) and \(p(\mathbf{x})\).</p>
                     </div>
                     <div style="font-size: 0.8em; margin-top: 20px;">
-                        <p class="fragment"><strong>Input:</strong> Simulator \(S(\mathbf{\theta}, \epsilon)\), calibration data \(\{(\mathbf{\theta}^i, \mathbf{x}_o^i)\}_{i=1}^{N_c}\) and test set \(\{\mathbf{x}_o^i\}_{i=1}^{N_o}\)</p>
+                        <p class="fragment"><strong>Input:</strong> Simulator \(S(\mathbf{\theta}, \epsilon)\), calibration data \(\{(\mathbf{\theta}^i, \mathbf{y}^i)\}_{i=1}^{N_c}\) and test set \(\{\mathbf{y}^i\}_{i=1}^{N_o}\)</p>
                         <p class="fragment"><strong>Step 1:</strong> Train n.n. \(h_{\omega}\) and density estimator \(q_{\phi}\)</p>
                         <div class="fragment equation">
-                            $$ \mathcal{L}_{NPE}(\omega, \phi) = \mathbb{E}_{\mathbf{\theta},\mathbf{x}_s} \left[ - \log q_{\phi}\left(\mathbf{\theta} | h_{\omega}(\mathbf{x}_s)\right) \right] $$
+                            $$ \mathcal{L}_{NPE}(\omega, \phi) = \mathbb{E}_{\mathbf{\theta},\mathbf{x}} \left[ - \log q_{\phi}\left(\mathbf{\theta} | h_{\omega}(\mathbf{x})\right) \right] $$
                         </div>
-                        <p class="fragment"><strong>Step 2:</strong> Fine-tune \(h_{\omega}\) on calibration data \(\{(\mathbf{\theta}^i, \mathbf{x}_o^i)\}\) (Initialize \(g = h\))</p>
+                        <p class="fragment"><strong>Step 2:</strong> Fine-tune \(h_{\omega}\) on calibration data \(\{(\mathbf{\theta}^i, \mathbf{y}^i)\}\) (Initialize \(g = h\))</p>
                         <div class="fragment equation">
-                            $$ \mathcal{L}(\varphi) = \sum_{i=1}^{N_c} \Vert g_{\varphi}(\mathbf{x}_o^i) - \mathbb{E}_{\epsilon}[h_{\omega}\left(S(\mathbf{\theta}^i, \epsilon)\right]\Vert^2$$
+                            $$ \mathcal{L}(\varphi) = \sum_{i=1}^{N_c} \Vert g_{\varphi}(\mathbf{y}^i) - \mathbb{E}_{\epsilon}[h_{\omega}\left(S(\mathbf{\theta}^i, \epsilon)\right]\Vert^2$$
                         </div>
-                        <p class="fragment"><strong>Step 3:</strong> Transport \(h_{\omega}(\mathbf{x}_s^j)\) to \(g_{\psi}(\mathbf{x}_o^i)\)</p>
-                        <p class="fragment"><strong>Output:</strong> Corrected posterior \(\tilde{p}(\mathbf{\theta} | \mathbf{x}_o) = \displaystyle\sum_{j}^{N_s} N_o P^*_{ij}q_{\phi}\left(\mathbf{\theta} | h_{\omega}(\mathbf{x}_s^j)\right)\)</p>
+                        <p class="fragment"><strong>Step 3:</strong> Transport \(h_{\omega}(\mathbf{x}^j)\) to \(g_{\psi}(\mathbf{y}^i)\)</p>
+                        <p class="fragment"><strong>Output:</strong> Corrected posterior \(\tilde{p}(\mathbf{\theta} | \mathbf{y}) = \displaystyle\sum_{j}^{N_s} N_o P^*_{ij}q_{\phi}\left(\mathbf{\theta} | h_{\omega}(\mathbf{x}^j)\right)\)</p>
                     </div>
                 </section>
 
@@ -571,7 +562,7 @@ for epoch in range(N_epochs):
                     <div class="medium">
                         <ul>
                             <li class="fragment">Two main components: the fine-tuning of the summary statistic and the transport of the simulated data to the calibration set</li>
-                            <li class="fragment">The correspondence between \(\mathbf{\theta}_i\) and \(\mathbf{x}_o^i\) is only used to define the OT cost</li>
+                            <li class="fragment">The correspondence between \(\mathbf{\theta}_i\) and \(\mathbf{y}^i\) is only used to define the OT cost</li>
                             <li class="fragment">The "test" set is used for the computation of the optimal transport. The method can't be applied to new data</li>
                             <li class="fragment">The hypothesis \(\mathbf{y} \perp \mathbf{\theta} \ \lvert \ \mathbf{x}\) is required to compute the posterior</li>
                         </ul>
@@ -605,7 +596,7 @@ for epoch in range(N_epochs):
                         <p class="fragment" style="margin-top: 30px;"><strong>Key Advantages:</strong></p>
                         <ul class="fragment">
                             <li>Leverages abundant simulations AND expensive calibration data efficiently</li>
-                            <li>No independence assumption \(\mathbf{y} \perp \theta | \mathbf{x}\) required</li>
+                            <li>No independence assumption \(\mathbf{y} \perp \theta | \mathbf{x}\) required (as opposed to RoPE).</li>
                             <li>Can be plugged-in on top of any SBI methods that provides \(\pi(\mathbf{\theta} | \mathbf{x}) \)</li>
                         </ul>
                     </div>
@@ -652,6 +643,127 @@ for epoch in range(N_epochs):
                 </section>
 
                 <section>
+                    <h4>FMCPE: Three Main Components</h4>
+                    <div class="medium">
+                        <ol style="margin-top: 30px;">
+                            <li class="fragment" style="margin-bottom: 25px;">
+                                <strong>Parameter space flow:</strong> Transport samples from source \(\pi(\theta|y)\) to target \(p(\theta|y)\)
+                            </li>
+                            <li class="fragment" style="margin-bottom: 25px;">
+                                <strong>Source distribution construction:</strong> Design \(\pi(\theta|y)\) using NPE and learnable kernel
+                                <div class="equation" style="font-size: 0.85em; margin-top: 10px;">
+                                    $$\pi(\theta|y) = \int p(\theta|x)q(x|y)dx$$
+                                </div>
+                            </li>
+                            <li class="fragment" style="margin-bottom: 25px;">
+                                <strong>Joint optimization:</strong> Learn both flows together for improved robustness
+                            </li>
+                        </ol>
+                    </div>
+                </section>
+
+                <section>
+                    <h4>Component 1: Parameter Space Flow</h4>
+                    <div class="medium">
+                        <p class="fragment"><strong>Goal:</strong> Map samples from source \(\pi(\theta|y)\) to corrected posterior \(p(\theta|y)\)</p>
+
+                        <div class="fragment" style="margin-top: 25px;">
+                            <p><strong>Flow definition:</strong></p>
+                            <div class="equation">
+                                $$\frac{d\theta_t}{dt} = u_{\Theta}(t, \theta_t, y)$$
+                            </div>
+                        </div>
+
+                        <div class="fragment" style="margin-top: 25px;">
+                            <p><strong>Training objective:</strong> Conditional Flow Matching loss</p>
+                            <div class="equation">
+                                $$\mathcal{L}_{\Theta} = \mathbb{E}\left[\|u_{\Theta}(t, \theta_t, y) - (\theta_1 - \theta_0)\|^2\right]$$
+                            </div>
+                            <p style="font-size: 0.9em; margin-top: 10px;">where \(\theta_1 \sim p(\theta|y)\) (from calibration) and \(\theta_0 \sim \pi(\theta|y)\) (from source)</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h4>Component 2: Source Distribution</h4>
+                    <div class="medium">
+                        <p class="fragment"><strong>Key insight:</strong> Use simulation-trained NPE \(p(\theta|x)\) with learned correction</p>
+
+                        <div class="fragment" style="margin-top: 25px;">
+                            <p><strong>Source construction:</strong></p>
+                            <div class="equation">
+                                $$\pi(\theta|y) = \int p(\theta|x)q(x|y)dx$$
+                            </div>
+                            <ul style="margin-top: 15px;">
+                                <li>\(p(\theta|x)\): Pretrained NPE on cheap simulations (frozen)</li>
+                                <li>\(q(x|y)\): Learnable kernel mapping \(y\) to simulator space</li>
+                            </ul>
+                        </div>
+
+                        <div class="fragment" style="margin-top: 25px;">
+                            <p><strong>Why this works:</strong> Bridges the gap between calibration data \(y\) and simulations \(x\)</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h4>Component 3: Learning q(x|y)</h4>
+                    <div class="medium">
+                        <p class="fragment"><strong>Approach:</strong> Use Flow Matching to learn \(q(x|y)\)</p>
+
+                        <div class="fragment" style="margin-top: 25px;">
+                            <p><strong>Flow in simulation space:</strong></p>
+                            <div class="equation">
+                                $$\frac{dx_t}{dt} = u_{X}(t, x_t, y)$$
+                            </div>
+                        </div>
+
+                        <div class="fragment" style="margin-top: 25px;">
+                            <p><strong>Training data generation:</strong> For each calibration pair \((\theta_i, y_i)\):</p>
+                            <ol style="margin-top: 10px; font-size: 0.9em;">
+                                <li>Generate \(x_1 = S(\theta_i)\) using the simulator</li>
+                                <li>Sample base \(x_0 \sim \mathcal{N}(y, \sigma^2 I)\)</li>
+                                <li>Train flow to match \(x_0 \to x_1\)</li>
+                            </ol>
+                        </div>
+
+                        <div class="fragment" style="margin-top: 25px;">
+                            <p><strong>Result:</strong> \(q(x|y)\) learns to transport from observed space to simulator space</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h4>Joint Training Algorithm</h4>
+                    <div class="medium">
+                        <p class="fragment"><strong>Key idea:</strong> Train both flows \(u_X\) and \(u_{\Theta}\) simultaneously</p>
+
+                        <div class="fragment" style="margin-top: 20px;">
+                            <p><strong>Training loop:</strong></p>
+                            <div style="background-color: #f8f8f8; padding: 15px; border-radius: 5px; margin-top: 10px; font-size: 0.87em;">
+                                <p style="margin-bottom: 10px;"><strong>For each minibatch:</strong></p>
+                                <ol style="margin-left: 20px; line-height: 1.6;">
+                                    <li>Sample \((\theta_1, y)\) from calibration set \(\mathcal{D}_{\text{cal}}\)</li>
+                                    <li>Generate \(x_1 = S(\theta_1)\) using simulator</li>
+                                    <li>Sample base points: \(x_0 \sim \mathcal{N}(y, \sigma^2 I)\)</li>
+                                    <li>Map \(x_0\) to simulator space: \(\tilde{x} = T_X(x_0; y)\) using current \(u_X\)</li>
+                                    <li>Sample from source: \(\theta_0 \sim p(\theta|\tilde{x})\) using pretrained NPE</li>
+                                    <li>Compute flow matching losses for both flows:
+                                        <div class="equation" style="font-size: 0.95em; margin: 10px 0;">
+                                            $$\ell_X = \|u_X(t, x_t, y) - (x_1 - x_0)\|^2$$
+                                            $$\ell_{\Theta} = \|u_{\Theta}(\tau, \theta_{\tau}, y) - (\theta_1 - \theta_0)\|^2$$
+                                        </div>
+                                    </li>
+                                    <li>Update both \(u_X\) and \(u_{\Theta}\) using \(\mathcal{L} = \ell_X + \ell_{\Theta}\)</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <p class="fragment" style="margin-top: 20px; color: #d33682;"><strong>→ Joint training ensures consistency between source and parameter flows</strong></p>
+                    </div>
+                </section>
+
+                <section>
                     <h4 style="margin-bottom: 50px;">FMCPE Overview</h4>
                     <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 10px; align-items: top; width: 150%; margin-left: -25%; margin-right: -25%;">
                         <!-- Schema column with r-stack -->
@@ -672,21 +784,16 @@ for epoch in range(N_epochs):
                         </div>
                     </div>
                 </section>
-            </section>
-
             <!-- Results -->
-            <section>
-                <section>
-                    <h2>Results</h2>
-                </section>
 
                 <section>
-                    <h4>Posterior Estimation Results</h4>
-                    <div style="display: flex; justify-content: center; align-items: center; margin-top: 30px;">
-                        <img src="assets/kde.svg" alt="KDE Results" style="max-width: 95%; height: auto;">
+		<h4>Results</h4>
+                    <div style="display: flex; justify-content: center; align-items: center; margin-top: 10px; width: 100%;">
+                        <img src="assets/kde.svg" alt="KDE Results" style="width: 85%; height: auto;">
                     </div>
                 </section>
             </section>
+
 
             <!-- Conclusion -->
             <section>
@@ -700,6 +807,21 @@ for epoch in range(N_epochs):
             <section>
                 <section>
                     <h2>Appendix</h2>
+                </section>
+
+                <section>
+                    <h4>Common hypothesis</h4>
+                    <div class="medium">
+                        <p>In most settings, the error is assumed to be independent of \(\mathbf{\theta}\):</p>
+                        <div class="equation">
+                            $$ \mathbf{y} \perp \mathbf{\theta} \ \lvert \ \mathbf{x} $$
+                        </div>
+                        <p class="fragment" style="margin-top: 20px;">This is a necessary condition to express \(p\left( \mathbf{\theta} | \mathbf{y}  \right)\) using \(p\left( \mathbf{\theta} | \mathbf{x}  \right)\) and \(p\left( \mathbf{x} | \mathbf{y}  \right)\):</p>
+                        <div class="fragment equation">
+                            $$ p\left( \mathbf{\theta} | \mathbf{y}  \right) = \int_{\mathcal{X}} p\left( \mathbf{\theta} | \mathbf{x}  \right) p(\mathbf{x} | \mathbf{y})\mathrm{d}\mathbf{x} $$
+                        </div>
+                        <p class="fragment" style="margin-top: 20px; font-size: 0.9em;">In practice, this is not always true for various physical systems. The low-fidelity simulator might not depend on some of the parameters, using a lower dimensional \(\mathbf{\theta}\).</p>
+                    </div>
                 </section>
 
                 <section>
