@@ -495,7 +495,7 @@ for epoch in range(N_epochs):
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="margin-bottom: 15px;"><strong>1. Simulation data:</strong><br>Access to simulated pairs \(\{\mathbf{\theta}_i, \mathbf{x}_i\}_{1:m}\)</li>
                                 <li style="margin-bottom: 15px;"><strong>2. Observations:</strong><br>Independent observations \(\{\mathbf{y}_j\}_{1:n}\)<br><span style="font-size: 0.9em; font-style: italic;">(\(\mathbf{y}\) does not depend on \(\mathbf{\theta}\))</span></li>
-                                <li style="margin-bottom: 15px;"><strong>3. Examples:</strong><br><span style="font-size: 0.9em;">(Add examples here)</span></li>
+                                <li style="margin-bottom: 15px;"><strong>3. Examples:</strong><br><span style="font-size: 0.9em;">Radio propagation model (Turin), Recurrent Spiking Network (neuroscience)</span></li>
                             </ul>
                         </div>
 
@@ -505,7 +505,7 @@ for epoch in range(N_epochs):
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="margin-bottom: 15px;"><strong>1. Simulation data:</strong><br>Access to simulated pairs \(\{\mathbf{\theta}_i, \mathbf{x}_i\}_{1:m}\)</li>
                                 <li style="margin-bottom: 15px;"><strong>2. Calibration set:</strong><br>Few paired observations \(\{\mathbf{\theta}_j, \mathbf{y}_j\}_{1:n}\)<br><span style="font-size: 0.9em; font-style: italic;">(Multi-fidelity simulation, expensive ground truth)</span></li>
-                                <li style="margin-bottom: 15px;"><strong>3. Examples:</strong><br><span style="font-size: 0.9em;">(Add examples here)</span></li>
+                                <li style="margin-bottom: 15px;"><strong>3. Examples:</strong><br><span style="font-size: 0.9em;">CAMELS dataset (Astrophysics), Causal Chambers</span></li>
                             </ul>
                         </div>
                     </div>
@@ -696,7 +696,7 @@ for epoch in range(N_epochs):
                             </li>
                             <li class="fragment" style="margin-bottom: 25px;">
                                 <strong>Source distribution construction:</strong> Design \(\pi(\theta|y)\) using NPE and learnable kernel
-                                <div class="equation" style="font-size: 0.85em; margin-top: 10px;">
+                                <div class="equation" style="font-size: 1em; margin-top: 10px;">
                                     $$\pi(\theta|y) = \int p(\theta|x)q(x|y)dx$$
                                 </div>
                             </li>
@@ -724,7 +724,7 @@ for epoch in range(N_epochs):
                             <div class="equation">
                                 $$\mathcal{L}_{\Theta} = \mathbb{E}\left[\|u_{\Theta}(t, \theta_t, y) - (\theta_1 - \theta_0)\|^2\right]$$
                             </div>
-                            <p style="font-size: 0.9em; margin-top: 10px;">where \(\theta_1 \sim p(\theta|y)\) (from calibration) and \(\theta_0 \sim \pi(\theta|y)\) (from source)</p>
+                            <p style="margin-top: 10px;">where \(\theta_1 \sim p(\theta|y)\) (from calibration) and \(\theta_0 \sim \pi(\theta|y)\) (from source)</p>
                         </div>
                     </div>
                 </section>
@@ -765,7 +765,7 @@ for epoch in range(N_epochs):
 
                         <div class="fragment" style="margin-top: 25px;">
                             <p><strong>Training data generation:</strong> For each calibration pair \((\theta_i, y_i)\):</p>
-                            <ol style="margin-top: 10px; font-size: 0.9em;">
+                            <ol style="margin-top: 10px;">
                                 <li>Generate \(x_1 = S(\theta_i)\) using the simulator</li>
                                 <li>Sample base \(x_0 \sim \mathcal{N}(y, \sigma^2 I)\)</li>
                                 <li>Train flow to match \(x_0 \to x_1\)</li>
@@ -829,15 +829,57 @@ for epoch in range(N_epochs):
                         </div>
                     </div>
                 </section>
-            <!-- Results -->
+            <!-- Experiments -->
+                <section>
+                    <h4>Experimental Setup</h4>
+                    <div class="medium">
+                        <p style="margin-bottom: 20px;">We evaluated FMCPE on <strong>4 datasets</strong>:</p>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px;">
+                            <div>
+                                <p><strong>Toy Examples:</strong></p>
+                                <ul style="margin-top: 10px; font-size: 0.9em;">
+                                    <li class="fragment">Gaussian</li>
+                                    <li class="fragment">Pendulum</li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <p><strong>Real-world (Causal Chambers):</strong></p>
+                                <ul style="margin-top: 10px; font-size: 0.9em;">
+                                    <li class="fragment">Wind Tunnel</li>
+                                    <li class="fragment">Light Tunnel</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <p class="fragment" style="margin-top: 25px; font-size: 0.85em;">
+                            <strong>Causal Chambers Dataset:</strong> Real-world benchmark for causal inference<br>
+                            🔗 <a href="https://causalchamber.ai/" target="_blank">https://causalchamber.ai/</a>
+                        </p>
+
+                        <div class="fragment" style="display: flex; justify-content: center; margin-top: 20px;">
+                            <img src="assets/causal_chambers.png" alt="Causal Chambers" style="max-width: 70%; height: auto;">
+                        </div>
+                    </div>
+                </section>
 
                 <section>
-		<h4>Results</h4>
+                    <h4>Causal Chambers Dataset</h4>
+                    <div style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
+                        <img src="assets/causal_chamber_comparison.svg" alt="Causal Chambers Comparison" style="max-width: 70%; height: auto;">
+                    </div>
+                </section>
+                <section>
+		<h4>Posterior Estimation Results</h4>
                     <div style="display: flex; justify-content: center; align-items: center; margin-top: 10px; width: 100%;">
                         <img src="assets/kde.svg" alt="KDE Results" style="width: 85%; height: auto;">
                     </div>
                 </section>
             </section>
+
+            <!-- Results -->
+
 
             <!-- SBI Hackathon -->
             <section>
